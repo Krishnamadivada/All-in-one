@@ -3,7 +3,7 @@ import React from "react";
 import Sidebar from "../components/Sidebar";
 import Topbar from "../components/Topbar";
 
-const Home = () => {
+const Dashboard = () => {
   return (
     <Box sx={{ display: "flex" }}>
       <CssBaseline />
@@ -48,4 +48,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default Dashboard;

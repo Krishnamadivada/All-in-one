@@ -67,8 +67,10 @@ const Login = () => {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    if (!email || !password) {
+    if (!email) {
       setEmailError("email is required");
+      return;
+    }else if(!password){
       setPasswordError("password is required");
       return;
     }

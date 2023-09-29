@@ -9,8 +9,8 @@ import {
   Toolbar,
 } from "@mui/material";
 import DashboardIcon from "@mui/icons-material/Dashboard";
-import PersonIcon from "@mui/icons-material/Person";
-import SettingsIcon from "@mui/icons-material/Settings";
+import TaskIcon from '@mui/icons-material/Task';
+import CloudIcon from '@mui/icons-material/Cloud';
 import ExitToAppIcon from "@mui/icons-material/ExitToApp";
 import Logo from "../assets/logo.png";
 import { useNavigate, useLocation } from "react-router-dom";
@@ -19,8 +19,8 @@ const drawerWidth = 240;
 
 const menuItems = [
   { label: "Dashboard", icon: <DashboardIcon />, path: "/" },
-  { label: "Profile", icon: <PersonIcon />, path: "/profile" },
-  { label: "Settings", icon: <SettingsIcon />, path: "/settings" },
+  { label: "Tasks", icon: <TaskIcon />, path: "/tasks" },
+  { label: "Weather", icon: <CloudIcon />, path: "/weather" },
   { label: "Logout", icon: <ExitToAppIcon />, path: "/logout" },
 ];
 
