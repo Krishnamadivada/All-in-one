@@ -24,6 +24,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { collection, getDocs, deleteDoc, doc } from "firebase/firestore";
 import { db } from "../firebase";
+import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 
 const Tasks = () => {
   const [tasks, setTasks] = useState([]);
@@ -45,8 +46,8 @@ const Tasks = () => {
   };
 
   const handleTaskCreated = (newTask) => {
-    setTasks([...tasks, newTask]); // Update tasks list
-    setIsModalOpen(false); // Close modal
+    setTasks([...tasks, newTask]); 
+    setIsModalOpen(false); 
     setOpenSnackbar(true);
   };
 
@@ -82,10 +83,10 @@ const Tasks = () => {
       });
       console.log("tasks", tasks);
       setTasks(tasks);
-      setLoading(false); // Set loading to false after data is loaded
+      setLoading(false); 
     } catch (error) {
       console.error("Error fetching tasks:", error);
-      setLoading(false); // Set loading to false in case of an error
+      setLoading(false); 
     }
   };
 
@@ -111,8 +112,8 @@ const Tasks = () => {
   }
 
   const handleTaskEdit = (task) => {
-    setEditingTask(task); // Set the task being edited
-    setIsModalOpen(true); // Open the modal for editing
+    setEditingTask(task); 
+    setIsModalOpen(true); 
   };
 
   const handleMessage = () => {
@@ -134,36 +135,53 @@ const Tasks = () => {
           <Grid item key={index} xs={12} sm={6} md={4}>
             <Card
               sx={{
-                boxShadow: "0 4px 8px  rgba(0,0,0,0.1)", // Add a subtle shadow
+                boxShadow: "0px 0px 8px 4px  rgba(0,0,0,0.1)", 
                 borderRadius: "10px",
-                backgroundColor: "#fff", // Set background color
+                // backgroundColor: "#95E1FD", 
                 height: "100%",
                 display: "flex",
                 flexDirection: "column",
+                justifyContent: 'center',
+                alignItems: 'center'
               }}
             >
-              <CardContent>
-                <Typography variant="h6">{task.name}</Typography>
-                <Typography variant="body2" color="text.secondary">
+              <CardContent sx={{
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: 'center',
+                alignItems: 'center'
+              }}>
+                <Typography variant="h6" fontWeight='bold'>{task.name}</Typography>
+                <Typography variant="body1" color="text.secondary" mt={1}>
                   {task.description}
                 </Typography>
-                <Typography variant="body2" color="text.secondary">
-                  Start Date: {task.startDate}
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                  End Date: {task.endDate}
-                </Typography>
+                <div style={{display: 'flex', flexDirection: 'row', marginTop: 10, gap: 20}}>
+                  <div>
+                <span style={{display: 'flex', alignItems: 'center'}}>
+                  Start Date <CalendarMonthIcon color="primary" fontSize="small"/> : 
+                </span>
+                <span style={{fontSize: 12}}>{task.startDate}</span>
+                </div>
+                <div>
+                <span style={{display: 'flex', alignItems: 'center'}}>
+                  End Date <CalendarMonthIcon color="primary" fontSize="small"/>: 
+                </span>
+                <span style={{fontSize: 12}}>{task.endDate}</span>
+                </div>
+                </div>
               </CardContent>
-              <CardActions sx={{ justifyContent: "flex-end" }}>
+              <CardActions>
                 <IconButton
                   color="primary"
                   onClick={() => handleTaskEdit(task)}
+                  sx={{backgroundColor: '#fff', boxShadow: "0 0 4px 4px  rgba(0,0,0,0.1)"}}
                 >
                   <EditIcon />
                 </IconButton>
                 <IconButton
-                  color="secondary"
+                  color="primary"
                   onClick={() => handleTaskDelete(task.id)}
+                  sx={{backgroundColor: '#fff', boxShadow: "0 0 4px 4px  rgba(0,0,0,0.1)"}}
                 >
                   <DeleteIcon />
                 </IconButton>

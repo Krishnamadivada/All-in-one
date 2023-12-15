@@ -4,12 +4,15 @@ import { useNavigate } from "react-router-dom";
 import { signOut } from "firebase/auth";
 import { auth } from "../firebase";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
+import { useDispatch, useSelector } from 'react-redux';
+import { clearUser } from "../Features/userSlice";
 
 const drawerWidth = 240;
 
 function Topbar() {
   const navigate = useNavigate();
-  const user = JSON.parse(localStorage.getItem("user"));
+  const dispatch = useDispatch();
+  const user = useSelector((state) => state.user.user);
   const [anchorEl, setAnchorEl] = useState(null);
 
   const handleMenuOpen = (event) => {
@@ -24,6 +27,7 @@ function Topbar() {
     await signOut(auth);
     localStorage.removeItem("token");
     localStorage.removeItem("user");
+    dispatch(clearUser());
     navigate("/login");
   };
 
@@ -33,12 +37,12 @@ function Topbar() {
       sx={{
         width: `calc(100% - ${drawerWidth}px)`,
         ml: `${drawerWidth}px`,
-        backgroundColor: "#fff",
+        background: '#F4F3FF'
       }}
     >
       <Toolbar sx={{ display: "flex", justifyContent: "flex-end" }}>
         <Button endIcon={<ArrowDropDownIcon />} onClick={handleMenuOpen}>
-          Welcome {user.displayName}
+          Welcome {user?.displayName}
         </Button>
 
         <Menu
