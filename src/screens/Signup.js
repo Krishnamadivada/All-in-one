@@ -16,6 +16,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { auth } from "../firebase";
+import { setUser } from "../Features/userSlice";
+import { useDispatch } from "react-redux";
 
 const Signup = () => {
   const [email, setEmail] = useState("");
@@ -28,6 +30,7 @@ const Signup = () => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const validateEmail = (email) => {
     console.log("Email onBlur triggered");
@@ -112,6 +115,7 @@ const Signup = () => {
       console.log("user", user);
       localStorage.setItem("token", user.accessToken);
       localStorage.setItem("user", JSON.stringify(user));
+      dispatch(setUser(user));
       navigate("/");
       setOpenSnackbar(true);
     } catch (error) {

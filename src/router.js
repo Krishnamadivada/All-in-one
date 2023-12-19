@@ -9,8 +9,8 @@ import Dashboard from "./screens/Dashboard";
 import App from "./App";
 import ProtectedRoutes from "./protectedRoutes";
 import Tasks from "./screens/Tasks";
-import Logout from "./screens/Logout";
 import Expense from "./screens/Expense/Expense";
+import Weather from "./screens/Weather/Weather";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -21,7 +21,7 @@ const router = createBrowserRouter(
         <Route path="/" element={<Dashboard />} />
         <Route path="/tasks" element={<Tasks />} />
         <Route path="/expense" element={<Expense />} />
-        <Route path="/logout" element={<Logout />} />
+        <Route path="/weather" element={<Weather />} />
       </Route>
     </Route>
   )

@@ -1,9 +1,64 @@
-import { Typography, CssBaseline, Box, Toolbar } from "@mui/material";
-import React from "react";
+import { Typography, CssBaseline, Box, Toolbar, Grid, Button } from "@mui/material";
 import Sidebar from "../components/Sidebar";
 import Topbar from "../components/Topbar";
+import { useEffect, useState } from "react";
+import { collection, getDocs } from "firebase/firestore";
+import { db } from "../firebase";
+import { useNavigate } from "react-router-dom";
+import { useSelector } from 'react-redux';
+import axios from "axios";
 
 const Dashboard = () => {
+  const [tasks, setTasks] = useState(0);
+  const [weatherData, setWeatherData] = useState(null);
+  const navigate = useNavigate();
+  const budgets = useSelector((state) => state.budgets);
+
+  const fetchTasks = async () => {
+    try {
+      const querySnapshot = await getDocs(collection(db, "tasks"));
+      let tasks = [];
+      querySnapshot.forEach((doc) => {
+        tasks.push({ ...doc.data(), id: doc.id });
+      });
+      console.log("tasks", tasks);
+      setTasks(tasks.length);
+    } catch (error) {
+      console.error("Error fetching tasks:", error);
+    }
+  };
+
+  const APIKEY = 'cfe00c1bf18f3badfb25075206369878';
+
+  const getWeather = async () => {
+   
+    axios
+      .get(`https://api.openweathermap.org/data/2.5/forecast?q=hyderabad&units=metric&appid=${APIKEY}`)
+      .then((response) => {
+        console.log('AAAAAAAAA', response.data)
+        setWeatherData(response.data);
+      })
+      .catch((error) => {
+        console.error("Error fetching data:", error);
+      });
+
+    }  
+
+  useEffect(() => {
+    fetchTasks();
+    getWeather();
+  },[]);
+
+  const handleCreateTask = () => {
+    navigate("/tasks");
+  }
+  const handleCreateBudget = () => {
+    navigate("/expense");
+  }
+  const handleWeather = () => {
+    navigate("/weather");
+  }
+
   return (
     <Box sx={{ display: "flex" }}>
       <CssBaseline />
@@ -14,35 +69,41 @@ const Dashboard = () => {
         sx={{ flexGrow: 1, bgcolor: "background.default", p: 3 }}
       >
         <Toolbar />
-        <Typography paragraph>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-          eiusmod tempor incididunt ut labore et dolore magna aliqua. Rhoncus
-          dolor purus non enim praesent elementum facilisis leo vel. Risus at
-          ultrices mi tempus imperdiet. Semper risus in hendrerit gravida rutrum
-          quisque non tellus. Convallis convallis tellus id interdum velit
-          laoreet id donec ultrices. Odio morbi quis commodo odio aenean sed
-          adipiscing. Amet nisl suscipit adipiscing bibendum est ultricies
-          integer quis. Cursus euismod quis viverra nibh cras. Metus vulputate
-          eu scelerisque felis imperdiet proin fermentum leo. Mauris commodo
-          quis imperdiet massa tincidunt. Cras tincidunt lobortis feugiat
-          vivamus at augue. At augue eget arcu dictum varius duis at consectetur
-          lorem. Velit sed ullamcorper morbi tincidunt. Lorem donec massa sapien
-          faucibus et molestie ac.
+        <Typography variant="h5" fontWeight='bold'>
+          Dashboard
         </Typography>
-        <Typography paragraph>
-          Consequat mauris nunc congue nisi vitae suscipit. Fringilla est
-          ullamcorper eget nulla facilisi etiam dignissim diam. Pulvinar
-          elementum integer enim neque volutpat ac tincidunt. Ornare suspendisse
-          sed nisi lacus sed viverra tellus. Purus sit amet volutpat consequat
-          mauris. Elementum eu facilisis sed odio morbi. Euismod lacinia at quis
-          risus sed vulputate odio. Morbi tincidunt ornare massa eget egestas
-          purus viverra accumsan in. In hendrerit gravida rutrum quisque non
-          tellus orci ac. Pellentesque nec nam aliquam sem et tortor. Habitant
-          morbi tristique senectus et. Adipiscing elit duis tristique
-          sollicitudin nibh sit. Ornare aenean euismod elementum nisi quis
-          eleifend. Commodo viverra maecenas accumsan lacus vel facilisis. Nulla
-          posuere sollicitudin aliquam ultrices sagittis orci a.
-        </Typography>
+        <Grid container spacing={3} mt={1}>
+         <Grid item xs={4}>
+          <div style={{ boxShadow: "0 0 4px 4px  rgba(0,0,0,0.1)", display: 'flex',flexDirection: 'column', justifyContent: 'center', alignItems:'center', padding: 10, borderRadius: 6}}>
+            <Typography mb={1}>
+              Existing tasks: {tasks}
+            </Typography>
+            <Button variant="outlined" onClick={handleCreateTask} size="small">
+              Create new Task
+            </Button>
+          </div>
+         </Grid>
+         <Grid item xs={4}>
+          <div style={{ boxShadow: "0 0 4px 4px  rgba(0,0,0,0.1)", display: 'flex',flexDirection: 'column', justifyContent: 'center', alignItems:'center', padding: 10, borderRadius: 6}}>
+            <Typography mb={1}>
+              Existing Budgets: {budgets.length}
+            </Typography>
+            <Button variant="outlined" onClick={handleCreateBudget} size="small">
+              Create new Budget
+            </Button>
+          </div>
+         </Grid>
+         <Grid item xs={4}>
+          <div style={{ boxShadow: "0 0 4px 4px  rgba(0,0,0,0.1)", display: 'flex',flexDirection: 'column', justifyContent: 'center', alignItems:'center', padding: 10, borderRadius: 6}}>
+            <Typography mb={1}>
+              Weather in {weatherData?.city?.name}{' '}{weatherData?.list[0].main.temp}°C
+            </Typography>
+            <Button variant="outlined" onClick={handleWeather} size="small">
+              Know weather
+            </Button>
+          </div>
+         </Grid>
+        </Grid>
       </Box>
     </Box>
   );

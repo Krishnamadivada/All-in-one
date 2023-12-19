@@ -11,7 +11,7 @@ import {
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import TaskIcon from '@mui/icons-material/Task';
 import CurrencyRupeeIcon from '@mui/icons-material/CurrencyRupee';
-import ExitToAppIcon from "@mui/icons-material/ExitToApp";
+import CloudIcon from '@mui/icons-material/Cloud';
 import Logo from "../assets/logo.png";
 import { useNavigate, useLocation } from "react-router-dom";
 
@@ -21,7 +21,7 @@ const menuItems = [
   { label: "Dashboard", icon: <DashboardIcon />, path: "/" },
   { label: "Tasks", icon: <TaskIcon />, path: "/tasks" },
   { label: "Expenses", icon: <CurrencyRupeeIcon />, path: "/expense" },
-  { label: "Logout", icon: <ExitToAppIcon />, path: "/logout" },
+  { label: "Weather", icon: <CloudIcon />, path: "/weather" },
 ];
 
 function Sidebar() {
