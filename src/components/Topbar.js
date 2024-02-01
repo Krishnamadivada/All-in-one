@@ -37,7 +37,8 @@ function Topbar() {
       sx={{
         width: `calc(100% - ${drawerWidth}px)`,
         ml: `${drawerWidth}px`,
-        background: '#F4F3FF'
+        background: '#F4F3FF',
+        boxShadow: 'none'
       }}
     >
       <Toolbar sx={{ display: "flex", justifyContent: "flex-end" }}>

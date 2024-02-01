@@ -11,7 +11,7 @@ const ExpenseTable = () => {
   return (
     <TableContainer component={Paper} sx={{mt: 2}}>
       <Table>
-        <TableHead>
+        <TableHead bgcolor='#F4F3FF'>
           <TableRow>
             <TableCell sx={{fontWeight: 'bold'}}>S.no</TableCell>
             <TableCell sx={{fontWeight: 'bold'}}>Name</TableCell>
@@ -33,7 +33,6 @@ const ExpenseTable = () => {
               <IconButton
                 color='primary'
                 onClick={() => dispatch(deleteExpense(expense.id))}
-                sx={{backgroundColor: '#fff', boxShadow: "0 0 4px 4px  rgba(0,0,0,0.1)"}}
               >
                 <DeleteIcon />
               </IconButton>

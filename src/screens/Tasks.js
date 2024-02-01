@@ -4,9 +4,13 @@ import {
   Box,
   Toolbar,
   Grid,
-  Card,
-  CardContent,
-  CardActions,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
   Button,
   TextField,
   Snackbar,
@@ -22,9 +26,9 @@ import TaskModal from "../components/TaskModal";
 import AddTaskIcon from "@mui/icons-material/AddTask";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { collection, getDocs, deleteDoc, doc } from "firebase/firestore";
+import { collection, getDocs, deleteDoc, doc, where, query } from "firebase/firestore";
 import { db } from "../firebase";
-import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
+import { useSelector } from 'react-redux';
 
 const Tasks = () => {
   const [tasks, setTasks] = useState([]);
@@ -35,6 +39,7 @@ const Tasks = () => {
   const [updateMessage, setUpdateMessage] = useState(false);
   const [deleteMessage, setDeleteMessage] = useState(false);
   const [loading, setLoading] = useState(true);
+  const user = useSelector((state) => state.user.user);
 
   const handleOpenModal = () => {
     setIsModalOpen(true);
@@ -74,25 +79,27 @@ const Tasks = () => {
     }
   };
 
-  const fetchTasks = async () => {
+  const fetchTasks = async (userId) => {
     try {
-      const querySnapshot = await getDocs(collection(db, "tasks"));
+      const q = query(collection(db, "tasks"), where("userId", "==", userId));
+      
+      const querySnapshot = await getDocs(q);
       let tasks = [];
       querySnapshot.forEach((doc) => {
         tasks.push({ ...doc.data(), id: doc.id });
       });
       console.log("tasks", tasks);
       setTasks(tasks);
-      setLoading(false); 
+      setLoading(false);
     } catch (error) {
       console.error("Error fetching tasks:", error);
-      setLoading(false); 
+      setLoading(false);
     }
   };
-
+  
   useEffect(() => {
-    fetchTasks();
-  }, []);
+      fetchTasks(user?.uid);
+  }, [user]);
 
   const filteredTasks = tasks.filter((task) =>
     task.name.toLowerCase().includes(searchQuery.toLowerCase())
@@ -130,66 +137,57 @@ const Tasks = () => {
 
   const TaskList = ({ tasks, handleTaskEdit, handleTaskDelete }) => {
     return (
-      <Grid container spacing={3} sx={{ mt: 1 }}>
-        {tasks.map((task, index) => (
-          <Grid item key={index} xs={12} sm={6} md={4}>
-            <Card
-              sx={{
-                boxShadow: "0px 0px 8px 4px  rgba(0,0,0,0.1)", 
-                borderRadius: "10px",
-                // backgroundColor: "#95E1FD", 
-                height: "100%",
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: 'center',
-                alignItems: 'center'
-              }}
-            >
-              <CardContent sx={{
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: 'center',
-                alignItems: 'center'
-              }}>
-                <Typography variant="h6" fontWeight='bold'>{task.name}</Typography>
-                <Typography variant="body1" color="text.secondary" mt={1}>
-                  {task.description}
-                </Typography>
-                <div style={{display: 'flex', flexDirection: 'row', marginTop: 10, gap: 20}}>
-                  <div>
-                <span style={{display: 'flex', alignItems: 'center'}}>
-                  Start Date <CalendarMonthIcon color="primary" fontSize="small"/> : 
-                </span>
-                <span style={{fontSize: 12}}>{task.startDate}</span>
-                </div>
-                <div>
-                <span style={{display: 'flex', alignItems: 'center'}}>
-                  End Date <CalendarMonthIcon color="primary" fontSize="small"/>: 
-                </span>
-                <span style={{fontSize: 12}}>{task.endDate}</span>
-                </div>
-                </div>
-              </CardContent>
-              <CardActions>
-                <IconButton
-                  color="primary"
-                  onClick={() => handleTaskEdit(task)}
-                  sx={{backgroundColor: '#fff', boxShadow: "0 0 4px 4px  rgba(0,0,0,0.1)"}}
-                >
-                  <EditIcon />
-                </IconButton>
-                <IconButton
-                  color="primary"
-                  onClick={() => handleTaskDelete(task.id)}
-                  sx={{backgroundColor: '#fff', boxShadow: "0 0 4px 4px  rgba(0,0,0,0.1)"}}
-                >
-                  <DeleteIcon />
-                </IconButton>
-              </CardActions>
-            </Card>
-          </Grid>
-        ))}
-      </Grid>
+      <TableContainer component={Paper} sx={{mt: 3}}>
+        <Table aria-label="task table">
+          <TableHead bgcolor='#F4F3FF'>
+            <TableRow>
+              <TableCell sx={{fontWeight: 'bold'}}>S.no</TableCell>
+              <TableCell sx={{fontWeight: 'bold'}}>Name</TableCell>
+              <TableCell sx={{fontWeight: 'bold'}}>Description</TableCell>
+              <TableCell sx={{fontWeight: 'bold'}}>Start Date</TableCell>
+              <TableCell sx={{fontWeight: 'bold'}}>End Date</TableCell>
+              <TableCell sx={{fontWeight: 'bold'}}>Action</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {tasks.map((task, index) => (
+              <TableRow key={index}>
+                <TableCell component="th" scope="row">
+                  {index+1}
+                </TableCell>
+                <TableCell>
+                  {task.name}
+                </TableCell>
+                <TableCell>{task.description}</TableCell>
+                <TableCell>
+                  <Typography variant="body2" color="text.secondary">
+                    {task.startDate}
+                  </Typography>
+                </TableCell>
+                <TableCell>
+                  <Typography variant="body2" color="text.secondary">
+                    {task.endDate}
+                  </Typography>
+                </TableCell>
+                <TableCell>
+                  <IconButton
+                    color="primary"
+                    onClick={() => handleTaskEdit(task)}
+                  >
+                    <EditIcon />
+                  </IconButton>
+                  <IconButton
+                    color="primary"
+                    onClick={() => handleTaskDelete(task.id)}
+                  >
+                    <DeleteIcon />
+                  </IconButton>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
     );
   };
 
@@ -256,12 +254,18 @@ const Tasks = () => {
             <Skeleton animation="wave" height={50} />
             <Skeleton animation="wave" height={50} />
           </Box>
-        ) : (
+        ) : tasks.length > 0 ? (
           <TaskList
             tasks={filteredTasks}
             handleTaskEdit={handleTaskEdit}
             handleTaskDelete={handleTaskDelete}
           />
+        ) : (
+          <Box sx={{display: 'flex', alignItems: 'center', justifyContent: 'center', flex: 1, height: '100%'}}>
+            <Typography variant="h6">
+              No Tasks Found! Start Creating..
+            </Typography>
+          </Box>
         )}
         <Snackbar
           open={openSnackbar}

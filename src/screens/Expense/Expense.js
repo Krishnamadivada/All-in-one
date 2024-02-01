@@ -10,7 +10,6 @@ import ExpenseTable from './ExpenseTable'
 
 const Expense = () => {
 
-  const user = useSelector((state) => state.user.user);
   const budgets = useSelector((state) => state.budgets);
   const expenses = useSelector((state) => state.expenses);
 
@@ -24,9 +23,7 @@ const Expense = () => {
           sx={{ flexGrow: 1, bgcolor: "background.default", p: 3 }}
         >
           <Toolbar />
-            <Typography variant="h6" sx={{ fontWeight: "bold", color: '#5B50FF' }}>
-               Hello, {user.displayName}
-            </Typography>
+            
             <Grid container spacing={3} mt={1}>
               <Grid item xs={12} sm={6}>
                 <BudgetForm />

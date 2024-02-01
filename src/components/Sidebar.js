@@ -5,7 +5,6 @@ import {
   ListItemIcon,
   ListItemText,
   ListItemButton,
-  Divider,
   Toolbar,
 } from "@mui/material";
 import DashboardIcon from "@mui/icons-material/Dashboard";
@@ -40,6 +39,7 @@ function Sidebar() {
         "& .MuiDrawer-paper": {
           width: drawerWidth,
           boxSizing: "border-box",
+          border: 'none',
         },
       }}
       variant="permanent"
@@ -51,7 +51,6 @@ function Sidebar() {
       >
         <img src={Logo} alt="logo" style={{ width: 150 }} />
       </Toolbar>
-      <Divider />
       <List>
         {menuItems.map((item) => (
           <ListItemButton
@@ -60,7 +59,7 @@ function Sidebar() {
             onClick={() => handleItemClick(item.path)}
             style={{
               backgroundColor:
-                location.pathname === item.path ? "#5B50FF" : "initial",
+                location.pathname === item.path ? "#1976d2" : "initial",
               color: location.pathname === item.path ? "white" : "initial",
               margin: '0 10px',
               borderRadius: 9,

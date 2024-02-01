@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { TextField, Button, Grid, CircularProgress } from "@mui/material";
 import { addDoc, collection, updateDoc, doc } from "firebase/firestore";
 import { db } from "../firebase";
+import { useSelector } from 'react-redux';
 
 const NewTaskForm = ({ onTaskCreated, task, onTaskEdited }) => {
   const [taskName, setTaskName] = useState(task ? task.name : "");
@@ -11,6 +12,7 @@ const NewTaskForm = ({ onTaskCreated, task, onTaskEdited }) => {
   const [startDate, setStartDate] = useState(task ? task.startDate : "");
   const [endDate, setEndDate] = useState(task ? task.endDate : "");
   const [isLoading, setIsLoading] = useState(false);
+  const user = useSelector((state) => state.user.user);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -22,6 +24,7 @@ const NewTaskForm = ({ onTaskCreated, task, onTaskEdited }) => {
           description: taskDescription,
           startDate: startDate,
           endDate: endDate,
+          userId: user?.uid
         });
         setIsLoading(false);
         onTaskEdited({
@@ -31,6 +34,7 @@ const NewTaskForm = ({ onTaskCreated, task, onTaskEdited }) => {
           description: taskDescription,
           startDate,
           endDate,
+          userId: user?.uid
         });
       } catch (e) {
         console.error("Error updating document: ", e);
@@ -43,6 +47,7 @@ const NewTaskForm = ({ onTaskCreated, task, onTaskEdited }) => {
           description: taskDescription,
           startDate: startDate,
           endDate: endDate,
+          userId: user?.uid
         });
         onTaskCreated({
           id: docRef.id,
@@ -50,6 +55,7 @@ const NewTaskForm = ({ onTaskCreated, task, onTaskEdited }) => {
           description: taskDescription,
           startDate,
           endDate,
+          userId: user?.uid
         });
         setIsLoading(false);
       } catch (e) {

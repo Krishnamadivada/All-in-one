@@ -2,7 +2,7 @@ import { Typography, CssBaseline, Box, Toolbar, Grid, Button } from "@mui/materi
 import Sidebar from "../components/Sidebar";
 import Topbar from "../components/Topbar";
 import { useEffect, useState } from "react";
-import { collection, getDocs } from "firebase/firestore";
+import { collection, getDocs, where, query } from "firebase/firestore";
 import { db } from "../firebase";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from 'react-redux';
@@ -13,10 +13,13 @@ const Dashboard = () => {
   const [weatherData, setWeatherData] = useState(null);
   const navigate = useNavigate();
   const budgets = useSelector((state) => state.budgets);
+  const user = useSelector((state) => state.user.user);
 
-  const fetchTasks = async () => {
+  const fetchTasks = async (userId) => {
     try {
-      const querySnapshot = await getDocs(collection(db, "tasks"));
+      const q = query(collection(db, "tasks"), where("userId", "==", userId));
+      
+      const querySnapshot = await getDocs(q);
       let tasks = [];
       querySnapshot.forEach((doc) => {
         tasks.push({ ...doc.data(), id: doc.id });
@@ -45,9 +48,9 @@ const Dashboard = () => {
     }  
 
   useEffect(() => {
-    fetchTasks();
+    fetchTasks(user?.uid);
     getWeather();
-  },[]);
+  },[user]);
 
   const handleCreateTask = () => {
     navigate("/tasks");
